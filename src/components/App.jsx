@@ -35,7 +35,7 @@ const App = () => {
         const data = await fetchAPI(searchQuery, page);
 
         if (!data.hits.length) {
-          throw new Error(`Nothing found for this query`)
+          throw new Error(`No results found for your search`)
         }
         
         setTotalHits(data.totalHits)
@@ -43,7 +43,7 @@ const App = () => {
 
       } catch (error) {
         console.log(error)
-        toast.warning(error.message)
+        toast.error(error.message)
       } finally {
         setLoader(false)
       }
