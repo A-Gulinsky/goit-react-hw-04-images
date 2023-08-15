@@ -39,6 +39,7 @@ const Searchbar = ({ onSubmitForm }) => {
         type="text"
         {...register('searchQuery', searchQueryOptions)}
         placeholder="Search images and photos"
+        autoComplete="off"
       />
       
     </SearchbarForm>
