@@ -1,49 +1,40 @@
-import { Component } from 'react'
+import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
+
+// prop-types
 import PropTypes from 'prop-types'
 
+// emotion
 import { Backdrop,ModalWindow } from './Modal.styled'
 
 const rootModal = document.querySelector('#root-modal')
 
-class Modal extends Component {
+const Modal = ({largeImg , onClose}) => {
 
-  componentDidMount() {
-    window.addEventListener(`keydown`, this.handleKeyDown)
-  }
-  
-  componentWillUnmount() {
-    window.removeEventListener(`keydown`, this.handleKeyDown)
-  }
-  
-  handleKeyDown = e => {
+  useEffect(() => {
 
-    if (e.code === `Escape`) {
-      this.props.onClose()
+    window.addEventListener(`keydown`, handleKeyDown)
+
+    return () => {
+      window.removeEventListener(`keydown`, handleKeyDown)
     }
-  }
+  })
+  
+  const handleKeyDown = e => e.code === 'Escape' ? onClose() : null
 
-  handleBackdropClose = e => {
+  const handleBackdropClose = e => e.target === e.currentTarget ? onClose() : null
 
-    if (e.target === e.currentTarget) {
-      this.props.onClose()
-    }
-  }
+  return createPortal(
 
-  render() {
-
-    const { largeImg } = this.props
-
-    return createPortal(
-      <Backdrop onClick={this.handleBackdropClose}>
-        <ModalWindow largeImg={largeImg} />
-      </Backdrop>
-    , rootModal)
-  }
+    <Backdrop onClick={handleBackdropClose}>
+      <ModalWindow largeImg={largeImg} />
+    </Backdrop>
+  , rootModal)
 }
 
 Modal.propTypes = {
   largeImg: PropTypes.string,
+  onClose: PropTypes.func,
 }
 
 export default Modal

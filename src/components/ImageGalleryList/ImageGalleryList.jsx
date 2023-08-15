@@ -19,7 +19,11 @@ const ImageGalleryList = ({ items }) => {
 }
 
 ImageGalleryList.propTypes = {
-  items: PropTypes.array.isRequired,
-}
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+};
 
 export default ImageGalleryList

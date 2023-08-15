@@ -1,51 +1,48 @@
-import { Component } from "react"
+// react hook form / hook form input Options
+import { useForm } from "react-hook-form"
+import { searchQueryOptions } from "./InputOptions"
 
-// Formik/yup
-import { Formik } from "formik"
-import { schema } from "./yupSchema"
-
-// icon
+// toast / svg icon
+import { toast } from "react-toastify"
 import { AiOutlineSearch } from 'react-icons/ai'
 
 // emotion
-import { SearchbarForm,Input,Button } from "./Searchbar.styled"
+import { SearchbarForm, Input, Button } from "./Searchbar.styled"
 
-class Searchbar extends Component {
 
-  state = {
-    searchQuery: ''
-  }
+const Searchbar = ({ onSubmitForm }) => {
 
-  handleSubmit = (values,actions) => {
-    const { searchQuery } = values
-
-    this.props.onSubmit(searchQuery.trim())
-  }
-
-  render() {
-
-    const initialValues = {
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: {
       searchQuery: ''
     }
+  })
 
-    return (
-      <Formik initialValues={initialValues} validationSchema={schema} onSubmit={this.handleSubmit}>
-        <SearchbarForm autoComplete="off">
+  const onSubmit = (data) => {
+    
+    if (!data.searchQuery) {
+      return toast.warning(`Search field cannot be empty`)
+    }
 
-          <Button type="submit">
-            <AiOutlineSearch  size={20} />
-          </Button>
-          
-          <Input
-            type="text"
-            name="searchQuery"
-            placeholder="Search images and photos" 
-          />
-        
-        </SearchbarForm>
-      </Formik>
-    )
+    onSubmitForm(data.searchQuery.toLowerCase())
+    reset()
   }
+
+  return (
+    <SearchbarForm onSubmit={handleSubmit(onSubmit)}>
+
+      <Button type="submit">
+        <AiOutlineSearch  size={20} />
+      </Button>
+
+      <Input
+        type="text"
+        {...register('searchQuery', searchQueryOptions)}
+        placeholder="Search images and photos"
+      />
+      
+    </SearchbarForm>
+  )
 }
 
 export default Searchbar

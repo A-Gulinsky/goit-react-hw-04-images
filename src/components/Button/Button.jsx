@@ -1,3 +1,4 @@
+// prop-types
 import PropTypes from 'prop-types'
 
 // loader
@@ -10,7 +11,7 @@ const Button = ({onClick, isLoad}) => {
   
   return (
     <>
-      {isLoad ? <Loader />: <LoadMore type="button" onClick={onClick}>Load More</LoadMore>}
+      {isLoad ? <Loader /> : <LoadMore type="button" onClick={onClick}>Load More</LoadMore>}
     </>
   )
 }

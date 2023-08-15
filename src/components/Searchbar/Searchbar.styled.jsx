@@ -1,14 +1,12 @@
 import styled from "@emotion/styled";
 
-import { Form, Field } from 'formik'
-
-export const SearchbarForm = styled(Form)`
+export const SearchbarForm = styled.form`
   display: flex;
   justify-content: center;
   align-items: center;
 `
 
-export const Input = styled(Field)`
+export const Input = styled.input`
   padding-top: 8px;
   padding-bottom: 8px;
 

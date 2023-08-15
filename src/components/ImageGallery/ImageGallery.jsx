@@ -1,101 +1,43 @@
-import { PureComponent } from "react";
+// prop types
+import PropTypes from 'prop-types'
 
+// components
 import ImageGalleryList from "components/ImageGalleryList";
 import Button from "components/Button";
 import Loader from "components/Loader";
 
-// toast
-import { toast } from 'react-toastify'
-
-// api
-import fetchTest from "components/services/api";
-
 // emotion
 import { GalleryBox } from "./ImageGallery.styled";
 
-class ImageGallery extends PureComponent {
-  state = {
-    totalHits: 0,
-    hits: [],
-    page: 1,
-    loader: false
+// toast
+import { toast } from "react-toastify";
+
+const ImageGallery = ({ onChangePage, useStates }) => {
+  
+  const {totalHits,hits,loader} = useStates
+
+  if (totalHits === hits.length && totalHits) {
+    toast.info(`Its all that we could find`)
   }
 
-  async componentDidUpdate(prevProps,prevState) {
+  return (
+    <GalleryBox>
 
-    try {
-      
-      // searchQuery 
-      const prevQuery = prevProps.searchQuery
-      const currentQuery = this.props.searchQuery
-
-      if (prevQuery !== currentQuery) {
+      {loader && <Loader />}
+      <ImageGalleryList items={hits} />
+      {totalHits !== hits.length && <Button isLoad={loader} onClick={onChangePage} />}
         
-        this.setState({
-          totalHits: 0,
-          hits: [],
-          loader: true
-        })
+    </GalleryBox>
+  )
+}
 
-        const data = await fetchTest(currentQuery, 1)
-
-        if (!data.hits.length) {
-          this.setState({loader: false})
-          throw new Error(`No results found for your search`)
-        }
-
-        this.setState({
-          totalHits: data.totalHits,
-          hits: data.hits,
-          page: 1,
-          loader: false
-        })
-      }
-
-      // page
-      const currentPage = this.state.page
-      const prevPage = prevState.page
-
-      if (currentPage !== prevPage) {
-        console.log(`Страница обновилась`)
-
-        this.setState({loader: true})
-        const data = await fetchTest(currentQuery, currentPage)
-        this.setState(state => ({ hits: [...state.hits, ...data.hits], loader: false }))
-      }
-
-
-      // check if currentHits === totalHits
-      const {totalHits,hits} = this.state
-
-      if (totalHits === hits.length && totalHits !== 0) {
-        toast.info(`It's all that we could find`);
-      }
-
-    } catch (error) {
-      console.log(error)
-      toast.error(error.message)
-    }
-  }
-
-  ButtonNextPage = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }))
-  }
-
-  render() {
-
-    const {totalHits, hits, loader} = this.state
-
-    return (
-      <GalleryBox>
-
-        {loader && <Loader />}
-        <ImageGalleryList items={hits} />
-        {totalHits !== hits.length && <Button isLoad={loader} onClick={this.ButtonNextPage} />}
-        
-      </GalleryBox>
-    )
-  }
+ImageGallery.propTypes = {
+  onChangePage: PropTypes.func,
+  useStates: PropTypes.shape({
+    totalHits: PropTypes.number.isRequired,
+    hits: PropTypes.array.isRequired,
+    loader: PropTypes.bool.isRequired,
+  })
 }
 
 export default ImageGallery
